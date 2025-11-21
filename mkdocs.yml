@@ -1,0 +1,95 @@
+site_name: AppSec+ Documentation
+site_description: Official Product & API Documentation for AppSec+
+site_url: https://ashokchandru.github.io/AppSec
+
+theme:
+  name: material
+  language: en
+  features:
+    - navigation.tabs
+    - navigation.expand
+    - navigation.sections
+    - content.code.annotate
+    - content.tabs.link
+    - content.tabs.copy
+    - search.highlight
+    - search.share
+    - toc.integrate
+    - header.autohide
+  palette:
+    - scheme: default
+      primary: indigo
+      accent: blue
+    - scheme: slate
+      primary: indigo
+      accent: blue
+      toggle:
+        icon: material/weather-night
+        name: Switch to dark mode
+
+markdown_extensions:
+  - admonition
+  - codehilite
+  - toc:
+      permalink: true
+  - footnotes
+  - md_in_html
+  - attr_list
+  - pymdownx.highlight
+  - pymdownx.inlinehilite
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.details
+
+plugins:
+  - search
+  - tags
+  - section-index
+
+nav:
+  - Home: index.md
+
+  - Product Documentation:
+      - Getting Started: product/getting-started.md
+      - Dashboard Overview: product/dashboard-overview.md
+      - Managing Applications: product/managing-applications.md
+      - Running Scans (UI): product/running-scans-ui.md
+      - Vulnerability Triage: product/vulnerability-triage.md
+      - Policy Center: product/policy-center.md
+      - Configuring Connectors: product/configuring-connectors-ui.md
+      - User & Role Management: product/user-role-management-ui.md
+      - Notifications: product/notifications.md
+      - Audit Logs (UI): product/audit-logs-ui.md
+      - FAQ: product/faq.md
+
+  - API Reference:
+      - Overview: api/index.md
+      - Authentication: api/authentication.md
+      - Applications: api/applications.md
+      - Scans: api/scans.md
+      - Vulnerabilities: api/vulnerabilities.md
+      - Policies: api/policies.md
+      - Identity Groups: api/identity-groups.md
+      - Roles: api/roles.md
+      - Connectors: api/connectors.md
+      - Audit Logs: api/audit-logs.md
+      - Webhooks (API): api/webhooks.md
+
+  - Guides:
+      - Quickstart: guides/quickstart.md
+      - CI/CD Integration: guides/cicd-integration.md
+      - Webhook Integration: guides/webhook-integration.md
+      - API Best Practices: guides/api-best-practices.md
+      - Policy Automation: guides/policy-automation.md
+
+  - Concepts:
+      - Scan Types: concepts/scan-types.md
+      - Vulnerability Lifecycle: concepts/vulnerability-lifecycle.md
+      - Policy Engine: concepts/policy-engine.md
+      - Connectors Overview: concepts/connectors-overview.md
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/ashokchandru/AppSec
