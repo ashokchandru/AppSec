@@ -13,3 +13,11 @@ AppSec+ has the following API Resource Groups (Top level domains of functionalit
 8. Roles
 9. Audit logs
 10. Webhooks
+
+
+Check the API file:
+- Download the JSON file or Yaml file from the repo
+- Go to https://editor.swagger.io/ 
+- Click File> Import URL > https://raw.githubusercontent.com/ashokchandru/AppSec/refs/heads/main/appsec_plus_openapi_full.json
+- Note: Regular Github url is an HTML file, to import API you need to give url to the raw file. Get link to the raw file from the top-right of the Github window
+- You can see the list of API endpoints under default tag
