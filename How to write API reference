@@ -1,0 +1,15 @@
+AppSec+ is an application security software
+AppSec+ API follows OpenAPI 3.0
+
+AppSec+ has the following API Resource Groups (Top level domains of functionality in API):
+
+1. Authentication
+2. Applications
+3. Scans
+4. Vulnerabilities
+5. Policies
+6. Connectors
+7. Identity Groups
+8. Roles
+9. Audit logs
+10. Webhooks
