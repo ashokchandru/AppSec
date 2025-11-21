@@ -1,0 +1,1303 @@
+openapi: 3.0.0
+info:
+  title: AppSec+ API
+  version: 1.0.0
+  description: 'AppSec+ is an application security platform API for managing applications,
+    scans, vulnerabilities,
+
+    policies, connectors, identity groups, roles, audit logs, and webhooks.'
+servers:
+- url: https://api.appsecplus.example.com
+  description: Production
+tags:
+- name: Core / Authentication
+  description: Obtain OAuth2 access tokens for AppSec+.
+- name: Core / Roles
+  description: Role-based access control and permission sets.
+- name: Core / Identity Groups
+  description: Logical groups of users and service accounts.
+- name: Security / Applications
+  description: Register and manage applications under assessment.
+- name: Security / Scans
+  description: Trigger and retrieve SAST/DAST/SCA/container scans.
+- name: Security / Vulnerabilities
+  description: Query and update vulnerability findings.
+- name: Security / Policies
+  description: Define and manage security evaluation policies.
+- name: Integrations / Connectors
+  description: Integrations with CI/CD, Git, ticketing, and messaging tools.
+- name: Integrations / Audit Logs
+  description: Export and inspect audit logs for compliance and forensics.
+- name: Integrations / Webhooks
+  description: Receive event notifications via outbound webhooks.
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    Error:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+        details:
+          type: object
+    Application:
+      type: object
+      properties:
+        id:
+          type: string
+          readOnly: true
+        name:
+          type: string
+        description:
+          type: string
+        criticality:
+          type: string
+          enum:
+          - low
+          - medium
+          - high
+          - critical
+        owner:
+          type: string
+        repoUrl:
+          type: string
+          format: uri
+        serviceUrl:
+          type: string
+          format: uri
+        language:
+          type: string
+        tags:
+          type: array
+          items:
+            type: string
+        createdAt:
+          type: string
+          format: date-time
+          readOnly: true
+        updatedAt:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - name
+    ScanSummary:
+      type: object
+      properties:
+        totalFindings:
+          type: integer
+          example: 42
+        critical:
+          type: integer
+          example: 1
+        high:
+          type: integer
+          example: 5
+        medium:
+          type: integer
+          example: 10
+        low:
+          type: integer
+          example: 26
+    Scan:
+      type: object
+      properties:
+        id:
+          type: string
+          readOnly: true
+        applicationId:
+          type: string
+        scanType:
+          type: string
+          enum:
+          - sast
+          - dast
+          - sca
+          - container
+        status:
+          type: string
+          enum:
+          - queued
+          - running
+          - completed
+          - failed
+        triggeredBy:
+          type: string
+        startedAt:
+          type: string
+          format: date-time
+        completedAt:
+          type: string
+          format: date-time
+        summary:
+          $ref: '#/components/schemas/ScanSummary'
+      required:
+      - applicationId
+      - scanType
+    Vulnerability:
+      type: object
+      properties:
+        id:
+          type: string
+          readOnly: true
+        applicationId:
+          type: string
+        scanId:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        severity:
+          type: string
+          enum:
+          - low
+          - medium
+          - high
+          - critical
+        cwe:
+          type: string
+        cve:
+          type: string
+        cvssScore:
+          type: number
+          format: float
+        status:
+          type: string
+          enum:
+          - open
+          - in_progress
+          - resolved
+          - accepted
+        introducedIn:
+          type: string
+        remediation:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    PolicyConditions:
+      type: object
+      properties:
+        applicationIds:
+          type: array
+          items:
+            type: string
+        minSeverity:
+          type: string
+          enum:
+          - low
+          - medium
+          - high
+          - critical
+    Policy:
+      type: object
+      properties:
+        id:
+          type: string
+          readOnly: true
+        name:
+          type: string
+        action:
+          type: string
+          enum:
+          - allow
+          - block
+          - monitor
+        conditions:
+          $ref: '#/components/schemas/PolicyConditions'
+      required:
+      - name
+      - action
+    Connector:
+      type: object
+      properties:
+        id:
+          type: string
+          readOnly: true
+        name:
+          type: string
+        type:
+          type: string
+        status:
+          type: string
+          enum:
+          - active
+          - inactive
+          - error
+        config:
+          type: object
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+      required:
+      - name
+      - type
+    IdentityGroup:
+      type: object
+      properties:
+        id:
+          type: string
+          readOnly: true
+        name:
+          type: string
+        description:
+          type: string
+        members:
+          type: array
+          items:
+            type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+      required:
+      - name
+    Role:
+      type: object
+      properties:
+        id:
+          type: string
+          readOnly: true
+        name:
+          type: string
+        description:
+          type: string
+        permissions:
+          type: array
+          items:
+            type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+      required:
+      - name
+      - permissions
+    AuditLogEntry:
+      type: object
+      properties:
+        id:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+        actor:
+          type: object
+        action:
+          type: string
+        resource:
+          type: object
+        metadata:
+          type: object
+    AuditLogExport:
+      type: object
+      properties:
+        exportId:
+          type: string
+        status:
+          type: string
+          enum:
+          - processing
+          - completed
+          - failed
+        downloadUrl:
+          type: string
+          format: uri
+        expiresAt:
+          type: string
+          format: date-time
+    Webhook:
+      type: object
+      properties:
+        id:
+          type: string
+          readOnly: true
+        name:
+          type: string
+        url:
+          type: string
+          format: uri
+        events:
+          type: array
+          items:
+            type: string
+        status:
+          type: string
+          enum:
+          - active
+          - disabled
+          - error
+        secret:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+      required:
+      - name
+      - url
+      - events
+      - secret
+security:
+- BearerAuth: []
+paths:
+  /oauth/token:
+    post:
+      tags:
+      - Core / Authentication
+      summary: Obtain OAuth2 access token
+      description: Use the client credentials grant to obtain a bearer token for AppSec+
+        APIs.
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                grant_type:
+                  type: string
+                  enum:
+                  - client_credentials
+                client_id:
+                  type: string
+                client_secret:
+                  type: string
+              required:
+              - grant_type
+              - client_id
+              - client_secret
+      responses:
+        '200':
+          description: Token response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  access_token:
+                    type: string
+                  token_type:
+                    type: string
+                    example: Bearer
+                  expires_in:
+                    type: integer
+                    example: 3600
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security: []
+  /applications:
+    get:
+      tags:
+      - Security / Applications
+      summary: List applications
+      parameters:
+      - name: owner
+        in: query
+        schema:
+          type: string
+        description: Filter by owner team or user.
+      - name: criticality
+        in: query
+        schema:
+          type: string
+        description: Filter by criticality (low, medium, high, critical).
+      - name: tag
+        in: query
+        schema:
+          type: string
+        description: Filter by tag key.
+      responses:
+        '200':
+          description: List of applications.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Application'
+        '401':
+          description: Unauthorized
+    post:
+      tags:
+      - Security / Applications
+      summary: Create application
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Application'
+      responses:
+        '201':
+          description: Application created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Application'
+        '400':
+          description: Invalid input
+  /applications/{id}:
+    get:
+      tags:
+      - Security / Applications
+      summary: Get application
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Application details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Application'
+        '404':
+          description: Application not found
+    put:
+      tags:
+      - Security / Applications
+      summary: Update application
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Application'
+      responses:
+        '200':
+          description: Application updated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Application'
+        '404':
+          description: Application not found
+    delete:
+      tags:
+      - Security / Applications
+      summary: Delete application
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: Application deleted.
+  /applications/{id}/scans:
+    get:
+      tags:
+      - Security / Scans
+      summary: List scans for application
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: List of scans for this application.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Scan'
+    post:
+      tags:
+      - Security / Scans
+      summary: Trigger application scan
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                scanType:
+                  type: string
+                  enum:
+                  - sast
+                  - dast
+                  - sca
+                  - container
+                triggeredBy:
+                  type: string
+              required:
+              - scanType
+      responses:
+        '202':
+          description: Scan queued.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Scan'
+        '404':
+          description: Application not found
+  /applications/{id}/vulnerabilities:
+    get:
+      tags:
+      - Security / Vulnerabilities
+      summary: List vulnerabilities for application
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: severity
+        in: query
+        schema:
+          type: string
+        description: Filter by severity.
+      - name: status
+        in: query
+        schema:
+          type: string
+        description: Filter by status.
+      responses:
+        '200':
+          description: List of vulnerabilities.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Vulnerability'
+  /scans:
+    get:
+      tags:
+      - Security / Scans
+      summary: List scans
+      parameters:
+      - name: applicationId
+        in: query
+        schema:
+          type: string
+      - name: status
+        in: query
+        schema:
+          type: string
+      responses:
+        '200':
+          description: List of scans.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Scan'
+    post:
+      tags:
+      - Security / Scans
+      summary: Trigger scan
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                applicationId:
+                  type: string
+                scanType:
+                  type: string
+                  enum:
+                  - sast
+                  - dast
+                  - sca
+                  - container
+                triggeredBy:
+                  type: string
+              required:
+              - applicationId
+              - scanType
+      responses:
+        '202':
+          description: Scan queued.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Scan'
+  /scans/{id}:
+    get:
+      tags:
+      - Security / Scans
+      summary: Get scan
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Scan details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Scan'
+        '404':
+          description: Scan not found
+  /vulnerabilities:
+    get:
+      tags:
+      - Security / Vulnerabilities
+      summary: List vulnerabilities
+      parameters:
+      - name: applicationId
+        in: query
+        schema:
+          type: string
+      - name: severity
+        in: query
+        schema:
+          type: string
+      - name: status
+        in: query
+        schema:
+          type: string
+      responses:
+        '200':
+          description: List of vulnerabilities.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Vulnerability'
+  /vulnerabilities/{id}:
+    get:
+      tags:
+      - Security / Vulnerabilities
+      summary: Get vulnerability
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Vulnerability details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Vulnerability'
+        '404':
+          description: Vulnerability not found
+    patch:
+      tags:
+      - Security / Vulnerabilities
+      summary: Update vulnerability status
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+              required:
+              - status
+      responses:
+        '200':
+          description: Vulnerability updated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Vulnerability'
+        '404':
+          description: Vulnerability not found
+  /policies:
+    get:
+      tags:
+      - Security / Policies
+      summary: List policies
+      responses:
+        '200':
+          description: List of policies.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Policy'
+    post:
+      tags:
+      - Security / Policies
+      summary: Create policy
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Policy'
+      responses:
+        '201':
+          description: Policy created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Policy'
+  /policies/{id}:
+    get:
+      tags:
+      - Security / Policies
+      summary: Get policy
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Policy details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Policy'
+        '404':
+          description: Policy not found
+    put:
+      tags:
+      - Security / Policies
+      summary: Update policy
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Policy'
+      responses:
+        '200':
+          description: Policy updated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Policy'
+    delete:
+      tags:
+      - Security / Policies
+      summary: Delete policy
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: Policy deleted.
+  /connectors:
+    get:
+      tags:
+      - Integrations / Connectors
+      summary: List connectors
+      responses:
+        '200':
+          description: List of connectors.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Connector'
+    post:
+      tags:
+      - Integrations / Connectors
+      summary: Register connector
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Connector'
+      responses:
+        '201':
+          description: Connector registered.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Connector'
+  /connectors/{id}:
+    get:
+      tags:
+      - Integrations / Connectors
+      summary: Get connector
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Connector details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Connector'
+        '404':
+          description: Connector not found
+    put:
+      tags:
+      - Integrations / Connectors
+      summary: Update connector
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Connector'
+      responses:
+        '200':
+          description: Connector updated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Connector'
+    delete:
+      tags:
+      - Integrations / Connectors
+      summary: Delete connector
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: Connector deleted.
+  /identity-groups:
+    get:
+      tags:
+      - Core / Identity Groups
+      summary: List identity groups
+      responses:
+        '200':
+          description: List of identity groups.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/IdentityGroup'
+    post:
+      tags:
+      - Core / Identity Groups
+      summary: Create identity group
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IdentityGroup'
+      responses:
+        '201':
+          description: Identity group created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IdentityGroup'
+  /identity-groups/{id}:
+    get:
+      tags:
+      - Core / Identity Groups
+      summary: Get identity group
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Group details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IdentityGroup'
+        '404':
+          description: Group not found
+    put:
+      tags:
+      - Core / Identity Groups
+      summary: Update identity group
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IdentityGroup'
+      responses:
+        '200':
+          description: Group updated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IdentityGroup'
+    delete:
+      tags:
+      - Core / Identity Groups
+      summary: Delete identity group
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: Group deleted.
+  /roles:
+    get:
+      tags:
+      - Core / Roles
+      summary: List roles
+      responses:
+        '200':
+          description: List of roles.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Role'
+    post:
+      tags:
+      - Core / Roles
+      summary: Create role
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Role'
+      responses:
+        '201':
+          description: Role created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Role'
+  /roles/{id}:
+    get:
+      tags:
+      - Core / Roles
+      summary: Get role
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Role details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Role'
+        '404':
+          description: Role not found
+    put:
+      tags:
+      - Core / Roles
+      summary: Update role
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Role'
+      responses:
+        '200':
+          description: Role updated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Role'
+    delete:
+      tags:
+      - Core / Roles
+      summary: Delete role
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: Role deleted.
+  /audit-logs:
+    get:
+      tags:
+      - Integrations / Audit Logs
+      summary: List audit logs
+      parameters:
+      - name: actorId
+        in: query
+        schema:
+          type: string
+      - name: resourceType
+        in: query
+        schema:
+          type: string
+      - name: action
+        in: query
+        schema:
+          type: string
+      - name: from
+        in: query
+        schema:
+          type: string
+          format: date-time
+      - name: to
+        in: query
+        schema:
+          type: string
+          format: date-time
+      responses:
+        '200':
+          description: List of audit log entries.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AuditLogEntry'
+  /audit-logs/{id}:
+    get:
+      tags:
+      - Integrations / Audit Logs
+      summary: Get audit log entry
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Audit log entry details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuditLogEntry'
+        '404':
+          description: Audit log entry not found
+  /audit-logs/export:
+    post:
+      tags:
+      - Integrations / Audit Logs
+      summary: Export audit logs
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                format:
+                  type: string
+                  enum:
+                  - jsonl
+                  - csv
+                from:
+                  type: string
+                  format: date-time
+                to:
+                  type: string
+                  format: date-time
+              required:
+              - format
+      responses:
+        '202':
+          description: Export started.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuditLogExport'
+  /audit-logs/export/{exportId}:
+    get:
+      tags:
+      - Integrations / Audit Logs
+      summary: Get audit log export job
+      parameters:
+      - name: exportId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Export job details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuditLogExport'
+        '404':
+          description: Export job not found
+  /webhooks:
+    get:
+      tags:
+      - Integrations / Webhooks
+      summary: List webhooks
+      responses:
+        '200':
+          description: List of webhooks.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Webhook'
+    post:
+      tags:
+      - Integrations / Webhooks
+      summary: Create webhook
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Webhook'
+      responses:
+        '201':
+          description: Webhook created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Webhook'
+  /webhooks/{id}:
+    get:
+      tags:
+      - Integrations / Webhooks
+      summary: Get webhook
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Webhook details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Webhook'
+        '404':
+          description: Webhook not found
+    put:
+      tags:
+      - Integrations / Webhooks
+      summary: Update webhook
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Webhook'
+      responses:
+        '200':
+          description: Webhook updated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Webhook'
+    delete:
+      tags:
+      - Integrations / Webhooks
+      summary: Delete webhook
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: Webhook deleted.
