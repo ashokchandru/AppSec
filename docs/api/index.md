@@ -22,5 +22,6 @@ Use the links below to explore each API resource category.
 ---
 
 ## OpenAPI Specification
+You can view or import the full OpenAPI schema in Swagger Editor, Postman, Insomnia, or any API client.
 - [appsec-plus-openapi.json](../openapi/appsec-plus-openapi.json)
 - [appsec-plus-openapi.yaml](../openapi/appsec-plus-openapi.yaml)
