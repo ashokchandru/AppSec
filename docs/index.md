@@ -33,8 +33,8 @@ Use the sidebar to browse:
 
 ## Guides  
 Step-by-step tutorials and integrations:
-- [Quickstart](guides/quickstart)
-- [CI/CD](guides/cicd-integration)
-- [Policy Automation](guides/policy-automation)
-- [Webhooks](guides/webhook-integration)
-- [API Best Practices](guides/api-best-practices)
+- [Quickstart](guides/quickstart)  
+- [CI/CD](guides/cicd-integration)  
+- [Policy Automation](guides/policy-automation)  
+- [Webhooks](guides/webhook-integration)  
+- [API Best Practices](guides/api-best-practices)  
