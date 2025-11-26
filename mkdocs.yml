@@ -18,6 +18,7 @@ theme:
     - search.share
     - toc.integrate
     - header.autohide
+    - footer.social
   palette:
     - scheme: default
       primary: indigo
