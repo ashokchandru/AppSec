@@ -32,7 +32,7 @@ Use the sidebar to browse:
 - [Webhooks](api/webhooks/)
 
 ## Guides  
-Step-by-step tutorials and integrations:
+Step-by-step tutorials and integrations:  
 - [Quickstart](guides/quickstart)  
 - [CI/CD](guides/cicd-integration)  
 - [Policy Automation](guides/policy-automation)  
