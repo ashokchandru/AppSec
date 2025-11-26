@@ -78,6 +78,7 @@ nav:
       - Connectors: api/connectors.md
       - Audit Logs: api/audit-logs.md
       - Webhooks (API): api/webhooks.md
+      - API Explorer: api-explorer.md
 
   - Guides:
       - Quickstart: guides/quickstart.md
