@@ -4,6 +4,8 @@ site_url: https://ashokchandru.github.io/AppSec
 
 theme:
   name: material
+  logo: assets/logo.png
+  favicon: assets/logo.png
   language: en
   features:
     - navigation.tabs
