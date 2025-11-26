@@ -97,3 +97,6 @@ extra:
       link: https://github.com/ashokchandru/AppSec
   copyright:
      text: © 2025 Ashok Kumar. All rights reserved.
+
+extra_css:
+ - assets/extra.css
