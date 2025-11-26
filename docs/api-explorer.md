@@ -11,8 +11,8 @@
 window.onload = function () {
   SwaggerUIBundle({
     urls: [
-      { url: "/openAPI/appsec-plus-openapi.json", name: "JSON Spec" },
-      { url: "/openAPI/appsec-plus-openapi.yaml", name: "YAML Spec" }
+      { url: "/openapi/appsec-plus-openapi.json", name: "JSON Spec" },
+      { url: "/openapi/appsec-plus-openapi.yaml", name: "YAML Spec" }
     ],
     dom_id: '#swagger-ui',
     deepLinking: true,
@@ -20,7 +20,7 @@ window.onload = function () {
       SwaggerUIBundle.presets.apis,
       SwaggerUIStandalonePreset
     ],
-    layout: "BaseLayout"
+    layout: "StandaloneLayout"
   });
 };
 </script>
