@@ -52,7 +52,7 @@ Application overview, workflows, user operations, and security capabilities.
 
 Explore and test the AppSec+ API using the interactive Swagger UI.
 
-**[Open API Explorer](api/explorer.md)**
+**[Open API Explorer](api-explorer.md)**
 
 ---
 
