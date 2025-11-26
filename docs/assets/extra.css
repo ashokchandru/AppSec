@@ -1,3 +1,4 @@
-.md-footer-meta {
+.md-footer-meta,
+.md-footer-meta__inner {
   color: white !important;
 }
