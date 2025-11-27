@@ -22,4 +22,4 @@ Welcome to AppSec+. This guide helps new users understand the platform and compl
 You need:
 - A valid AppSec+ account  
 - Appropriate access permissions (assigned by your admin)
-
+![logo](darklogo.png)
