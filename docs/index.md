@@ -153,7 +153,5 @@ Understand AppSec+ architecture, terminology, and foundations.
 
 ## Need Help?
 
-If you find an issue, request enhancements, or want to contribute:
-
-**GitHub Repository:**  
-https://github.com/ashokchandru/AppSec
+If you find an issue, request enhancements, or want to build a website:
+Drop an email to ashokchandru@gmail.com
