@@ -153,5 +153,5 @@ Understand AppSec+ architecture, terminology, and foundations.
 
 ## Need Help?
 
-If you find an issue, request enhancements, or want to build a website:
+If you find an issue, request enhancements, or you want to build a portal like this:  
 Drop an email to ashokchandru@gmail.com
